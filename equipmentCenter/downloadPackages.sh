@@ -4,11 +4,16 @@ set -e
 
 ## ======== DOWNLOAD FEC PACKAGES =========
 
-read -p 'Customer Portal Username: ' sourceUser
-read -sp 'Customer Portal Token: ' sourcePassword
-partialPassword="${sourcePassword:0: -4}"
-echo "${partialPassword//?/*}${sourcePassword: -4}"
-read -p 'FEC Packages version: ' version
+read -p 'Customer Portal Username: ' portalUser </dev/tty
+read -sp 'Customer Portal Token: ' portaltoken </dev/tty
+if [[ ${#portaltoken} -lt 300 ]]
+then
+    echo "Error: Token is to short"
+    exit
+fi
+partialToken="${portaltoken:0: -4}"
+echo "${partialToken//?/*}${portaltoken: -4}"
+read -p 'FEC Packages version: ' version </dev/tty
 version=$(echo $version | sed 's/\./\\\./g')
 
 filters=("/$version/.*\\.zip\\(\\.[0-9]\\+\\)\\?$") #zip or zip.xxx
@@ -31,7 +36,7 @@ while [ ! -z "$contToken" ]; do
         url=$sourceServer"/service/rest/v1/assets?continuationToken="$contToken"&repository="$sourceRepo
     fi
     echo Processing repository token: $contToken >> $logfile
-    response=`curl -ksSL -u "$sourceUser:$sourcePassword" -X GET --header 'Accept: application/json' "$url"`
+    response=`curl -ksSL -u "$portalUser:$portaltoken" -X GET --header 'Accept: application/json' "$url"`
     echo $response | sed 's/"downloadUrl"/\n"downloadUrl"/g' | sed -n 's|.*"downloadUrl" : "\([^"]*\)".*|\1|p' > $tempFile
     for filter in "${filters[@]}"; do
         cat $tempFile | grep "$filter" >> $outputFile || true
@@ -54,7 +59,7 @@ for url in "${urls[@]}"; do
     cd $dir
 
     echo -n Downloading $url | tee -a $logfile 2>&1
-    curl -vks -u "$sourceUser:$sourcePassword" -D response.header -X GET "$url" -O >> /dev/null 2>&1
+    curl -vks -u "$portalUser:$portaltoken" -D response.header -X GET "$url" -O >> /dev/null 2>&1
     responseCode=`cat response.header | sed -n '1p' | cut -d' ' -f2`
     if [ "$responseCode" == "200" ]; then
         echo " - DONE" | tee -a $logfile 2>&1

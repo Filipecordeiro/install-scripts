@@ -4,11 +4,11 @@ set -e
 
 ## ======== PARAMETERS ========
 
-read -p 'Infrastructure Name: ' infrastructure
-read -p 'Agent Name: ' agent
-read -p 'License: ' license
-read -p 'Customer: ' customer
-read -sp 'Customer Portal Token: ' portalToken
+read -p 'Infrastructure Name: ' infrastructure </dev/tty
+read -p 'Agent Name: ' agent </dev/tty
+read -p 'License: ' license </dev/tty
+read -p 'Customer: ' customer </dev/tty
+read -sp 'Customer Portal Token: ' portalToken </dev/tty
 echo ${#portalToken} 
 if [[ ${#portalToken} -lt 300 ]]
 then
@@ -18,15 +18,15 @@ fi
 partialToken="${portalToken:0: -4}"
 echo "${partialToken//?/*}${portalToken: -4}"
 
-read -p 'Environment Type (Testing/Production/Staging/Development) [Production]: ' environmentType
+read -p 'Environment Type (Testing/Production/Staging/Development) [Production]: ' environmentType </dev/tty
 environmentType=${environmentType:-Production}
-read -p 'Internet Network Name [internet]:' internetNetworkName
+read -p 'Internet Network Name [internet]:' internetNetworkName </dev/tty
 internetNetworkName=${internetNetworkName:-internet}
-read -p 'Domain [localhost]:' domain
+read -p 'Domain [localhost]:' domain </dev/tty
 domain=${domain:-localhost}
-read -p 'Agent Parameters: ' parameters
+read -p 'Agent Parameters: ' parameters </dev/tty
 
-read -p 'Volumes base folder [opt/fec]: ' BASE_FOLDER
+read -p 'Volumes base folder [opt/fec]: ' BASE_FOLDER </dev/tty
 BASE_FOLDER=${BASE_FOLDER:-opt/fec}
 
 ## ======== CREATE INFRASTRUCTURE AND AGENT ========
