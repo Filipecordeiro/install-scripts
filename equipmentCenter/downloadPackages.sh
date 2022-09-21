@@ -4,6 +4,9 @@ set -e
 
 ## ======== DOWNLOAD FEC PACKAGES =========
 
+sourceServer=https://criticalmanufacturing.io
+sourceRepo=packages
+
 read -p 'Customer Portal Username: ' portalUser </dev/tty
 read -sp 'Customer Portal Token: ' portaltoken </dev/tty
 if [[ ${#portaltoken} -lt 300 ]]
@@ -16,9 +19,7 @@ echo "${partialToken//?/*}${portaltoken: -4}"
 read -p 'FEC Packages version: ' version </dev/tty
 version=$(echo $version | sed 's/\./\\\./g')
 
-filters=("/$version/.*\\.zip\\(\\.[0-9]\\+\\)\\?$") #zip or zip.xxx
-sourceServer=https://criticalmanufacturing.io
-sourceRepo=packages
+filters=("/$version/.*\\.zip\\(\\.[0-9]\\+\\)\\?$" "/$version/.*\\.xlsx$") #*.zip or *.zip.xxx or *.xlsx
 
 logfile=$sourceRepo-backup.log
 outputFile=$sourceRepo-artifacts.txt
