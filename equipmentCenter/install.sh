@@ -6,7 +6,7 @@ set -e
 
 read -p 'Infrastructure Name: ' infrastructure </dev/tty
 read -p 'Agent Name: ' agent </dev/tty
-read -p 'License: ' license </dev/tty
+#read -p 'License: ' license </dev/tty
 read -p 'Customer: ' customer </dev/tty
 read -sp 'Customer Portal Token: ' portalToken </dev/tty
 if [[ ${#portalToken} -lt 300 ]]
@@ -42,15 +42,18 @@ fi
 if [ -z "$REPOSITORY_PASSWORD" ]
 then
     read -sp 'Scripts repository password: ' REPOSITORY_PASSWORD </dev/tty
+    echo
 fi
 
 ## ======== CREATE INFRASTRUCTURE AND AGENT ========
-echo; echo "Creating Infrastructure and Agent"
+echo
+echo "Creating Infrastructure and Agent"
 curl -fsSL -u $REPOSITORY_USER:$REPOSITORY_PASSWORD $REPOSITORY/ubuntu/install.bash | bash
 
 ## ======== DEPLOY AGENT ========
-echo; echo "Deploying Agent"
-curl -fsSL -u $REPOSITORY_USER:$REPOSITORY_PASSWORD $REPOSITORY/ubuntu/portal/initializeInfrastructure.bash | bash -s -- --agent "$agent" --license "$license" --customer "$customer" --infrastructure "$infrastructure" --domain "$domain" --environmentType "$environmentType" --internetNetworkName "$internetNetworkName" --portalToken "$portalToken" --parameters "$parameters"
+echo
+echo "Deploying Agent"
+curl -fsSL -u $REPOSITORY_USER:$REPOSITORY_PASSWORD $REPOSITORY/ubuntu/portal/initializeInfrastructure.bash | bash -s -- --agent "$agent" --customer "$customer" --infrastructure "$infrastructure" --domain "$domain" --environmentType "$environmentType" --internetNetworkName "$internetNetworkName" --portalToken "$portalToken" --parameters "$parameters"
 
 ## ======== CREATE VOLUMES FOLDERS ========
 echo; echo "Creating volume folders"
