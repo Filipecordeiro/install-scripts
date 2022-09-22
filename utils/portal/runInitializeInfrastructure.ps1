@@ -16,7 +16,7 @@ param (
     [string]$RepositoryUser = "",
     [string]$RepositoryPassword = "",
     [string]$CustomerPortalSDKBaseReleaseUrl = "",
-    [string]$CustomerPortalSDKLatestTag = "",
+    [string]$CustomerPortalSDKLatestTag = ""
 )
 
 if ([string]::IsNullOrEmpty($environmentType)) {
