@@ -43,14 +43,14 @@ export SDK_BASE_URL=${SDK_BASE_URL:-""}
 read -p 'Portal SDK TAG (empty if not to override/latest): ' SDK_TAG </dev/tty
 export SDK_TAG=${SDK_TAG:-""}
 
-## ======== CREATE INFRASTRUCTURE AND AGENT ========
+## ======== INSTALL DOCKER AND PORTAINER ========
 echo
-echo "Creating Infrastructure and Agent"
+echo "Installing Container Dependencies (Docker, Portainer, etc)"
 curl -fsSL -u $REPOSITORY_USER:$REPOSITORY_PASSWORD $REPOSITORY/ubuntu/install.bash | bash
 
-## ======== DEPLOY AGENT ========
+## ======== CREATE INFRASTRUCTURE AND AGENT ========
 echo
-echo "Deploying Agent"
+echo "Creating Infrastructure and Deploying Agent"
 curl -fsSL -u $REPOSITORY_USER:$REPOSITORY_PASSWORD $REPOSITORY/ubuntu/portal/initializeInfrastructure.bash | bash -s -- --agent "$agent" --customer "$customer" --infrastructure "$infrastructure" --domain "$domain" --environmentType "$environmentType" --internetNetworkName "$internetNetworkName" --portalToken "$portalToken" --parameters "$parameters"
 
 ## ======== CREATE VOLUMES FOLDERS ========
