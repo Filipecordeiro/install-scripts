@@ -11,7 +11,12 @@ param (
     [string] $portalToken,
     #deprecated parameters
     [Obsolete("The 'customer' parameter should be used instead")]
-    [string]$site
+    [string]$site,
+    [string]$RepositoryUrl = "https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main",
+    [string]$RepositoryUser = "",
+    [string]$RepositoryPassword = "",
+    [string]$CustomerPortalSDKBaseReleaseUrl = "",
+    [string]$CustomerPortalSDKLatestTag = "",
 )
 
 if ([string]::IsNullOrEmpty($environmentType)) {
@@ -26,12 +31,12 @@ if ([string]::IsNullOrEmpty($parameters)) {
     $parameters = $PSScriptRoot + "./parameters/agent_parameters.json"
 }
 
-$RepositoryUrl = "https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main"
 $global:ProgressPreference = 'SilentlyContinue'
 
 # Import SDK
-Invoke-WebRequest -Uri "$RepositoryUrl/utils/portal/utils/importSDK.ps1" -OutFile "./importSDK.ps1"
-. ./importSDK.ps1
+$requestHeaders = @{ Authorization = "Basic "+ [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${RepositoryUser}:${RepositoryPassword}")) }
+Invoke-WebRequest -Uri "$RepositoryUrl/utils/portal/utils/importSDK.ps1" -OutFile "./importSDK.ps1" -Headers $requestHeaders
+. ./importSDK.ps1 -CustomerPortalSDKBaseReleaseUrl $CustomerPortalSDKBaseReleaseUrl -CustomerPortalSDKLatestTag $CustomerPortalSDKLatestTag -CustomerPortalSDKRepositoryUser $RepositoryUser -CustomerPortalSDKRepositoryPassword $RepositoryPassword
 Remove-Item -Path ./importSDK.ps1
 
 # Login
@@ -61,7 +66,7 @@ if (![string]::IsNullOrEmpty($internetNetworkName)) {
 docker network create -d overlay --attachable --internal traefik-network
 
 # Deploy Agent
-Invoke-WebRequest -Uri "$RepositoryUrl/utils/portal/utils/deployAgent.ps1" -OutFile "./deployAgent.ps1"
+Invoke-WebRequest -Uri "$RepositoryUrl/utils/portal/utils/deployAgent.ps1" -OutFile "./deployAgent.ps1" -Headers $requestHeaders
 . ./deployAgent.ps1 -agent $agent
 Remove-Item -Path ./deployAgent.ps1
 

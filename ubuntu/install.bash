@@ -1,5 +1,5 @@
 #!/bin/bash
-REPOSITORY="https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main"
+REPOSITORY=${REPOSITORY:-"https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main"}
 
 #read arguments
 #while [ $# -gt 0 ]; do
@@ -28,12 +28,12 @@ swapoff -a
 sed -i 's/\/swap.img/#\/swap.img/g' /etc/fstab
 
 #install docker
-curl -fsSL "$REPOSITORY/ubuntu/installDocker.bash" | bash;
+curl -fsSL -u $REPOSITORY_USER:$REPOSITORY_PASSWORD "$REPOSITORY/ubuntu/installDocker.bash" | bash;
 
 # Install PowerShell
-curl -fsSL "$REPOSITORY/ubuntu/installPowershell.bash" | bash;
+curl -fsSL -u $REPOSITORY_USER:$REPOSITORY_PASSWORD "$REPOSITORY/ubuntu/installPowershell.bash" | bash;
 
 #Deploy portainer
-wget -q "$REPOSITORY/utils/deployPortainer.ps1"
-pwsh -File ./deployPortainer.ps1 -RepositoryUrl $REPOSITORY
+wget -q "$REPOSITORY/utils/deployPortainer.ps1" --user=$REPOSITORY_USER --password=$REPOSITORY_PASSWORD
+pwsh -File ./deployPortainer.ps1 -RepositoryUrl $REPOSITORY -RepositoryUser $REPOSITORY_USER -RepositoryPassword $REPOSITORY_PASSWORD
 rm -f deployPortainer.ps1

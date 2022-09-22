@@ -28,16 +28,29 @@ read -p 'Agent Parameters: ' parameters </dev/tty
 read -p 'Volumes base folder [opt/fec]: ' BASE_FOLDER </dev/tty
 BASE_FOLDER=${BASE_FOLDER:-opt/fec}
 
-read -p 'Scripts repository [https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main]: ' REPOSITORY </dev/tty
-REPOSITORY=${REPOSITORY:-"https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main"}
+if [ -z "$REPOSITORY" ]
+then
+    read -p 'Scripts repository [https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main]: ' REPOSITORY </dev/tty
+    REPOSITORY=${REPOSITORY:-"https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main"}
+fi
+
+if [ -z "$REPOSITORY_USER" ]
+then
+    read -p 'Scripts repository user: ' REPOSITORY_USER </dev/tty
+fi
+
+if [ -z "$REPOSITORY_PASSWORD" ]
+then
+    read -sp 'Scripts repository password: ' REPOSITORY_PASSWORD </dev/tty
+fi
 
 ## ======== CREATE INFRASTRUCTURE AND AGENT ========
 echo; echo "Creating Infrastructure and Agent"
-curl -fsSL $REPOSITORY/ubuntu/install.bash | bash
+curl -fsSL -u $REPOSITORY_USER:$REPOSITORY_PASSWORD $REPOSITORY/ubuntu/install.bash | bash
 
 ## ======== DEPLOY AGENT ========
 echo; echo "Deploying Agent"
-curl -fsSL $REPOSITORY/ubuntu/portal/initializeInfrastructure.bash | bash -s -- --agent "$agent" --license "$license" --customer "$customer" --infrastructure "$infrastructure" --domain "$domain" --environmentType "$environmentType" --internetNetworkName "$internetNetworkName" --portalToken "$portalToken" --parameters "$parameters"
+curl -fsSL -u $REPOSITORY_USER:$REPOSITORY_PASSWORD $REPOSITORY/ubuntu/portal/initializeInfrastructure.bash | bash -s -- --agent "$agent" --license "$license" --customer "$customer" --infrastructure "$infrastructure" --domain "$domain" --environmentType "$environmentType" --internetNetworkName "$internetNetworkName" --portalToken "$portalToken" --parameters "$parameters"
 
 ## ======== CREATE VOLUMES FOLDERS ========
 echo; echo "Creating volume folders"

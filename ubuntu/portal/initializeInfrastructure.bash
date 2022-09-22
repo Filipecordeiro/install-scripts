@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY="https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main"
+REPOSITORY=${REPOSITORY:-"https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main"}
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
@@ -32,5 +32,5 @@ then
     echo "parameters: $parameters"
 fi
 
-curl -Os "$REPOSITORY/utils/portal/runInitializeInfrastructure.ps1"
-pwsh -File ./runInitializeInfrastructure.ps1 -agent "$agent" -site "$site" -customer "$customer" -infrastructure "$infrastructure" -domain "$domain" -environmentType "$environmentType" -internetNetworkName "$internetNetworkName" -portalToken "$portalToken" -parameters "$parameters"
+curl -Os -u $REPOSITORY_USER:$REPOSITORY_PASS "$REPOSITORY/utils/portal/runInitializeInfrastructure.ps1"
+pwsh -File ./runInitializeInfrastructure.ps1 -agent "$agent" -site "$site" -customer "$customer" -infrastructure "$infrastructure" -domain "$domain" -environmentType "$environmentType" -internetNetworkName "$internetNetworkName" -portalToken "$portalToken" -parameters "$parameters" -RepositoryUrl $REPOSITORY -RepositoryUser $REPOSITORY_USER -RepositoryPassword $REPOSITORY_PASSWORD -CustomerPortalSDKBaseReleaseUrl $SDK_BASE_URL -CustomerPortalSDKLatestTag $SDK_TAG

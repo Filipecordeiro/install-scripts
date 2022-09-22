@@ -1,5 +1,7 @@
 param (
        [String]$RepositoryUrl = "https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main",
+       [String]$RepositoryUser = "",
+       [String]$RepositoryPassword = "",
        [String]$PortainerPassword = "",
        [Int]$PortainerPasswordLength = 18
       )
@@ -14,10 +16,11 @@ if ($PortainerPassword -eq "")
 Write-Host "RepositoryUrl: $RepositoryUrl"
 Write-Host "PortainerPassword: $PortainerPassword"
 #Download files
+$requestHeaders = @{ Authorization = "Basic "+ [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${RepositoryUser}:${RepositoryPassword}")) }
 Write-Host "Downloading file $RepositoryUrl/utils/portainer-agent-stack.yml"
-Invoke-WebRequest -Uri "$RepositoryUrl/utils/portainer-agent-stack.yml" -OutFile portainer-agent-stack.yml
+Invoke-WebRequest -Uri "$RepositoryUrl/utils/portainer-agent-stack.yml" -OutFile portainer-agent-stack.yml -Headers $requestHeaders
 Write-Host "Downloading file $RepositoryUrl/utils/createStackInPortainer.ps1"
-Invoke-WebRequest -Uri "$RepositoryUrl/utils/createStackInPortainer.ps1" -OutFile createStackInPortainer.ps1
+Invoke-WebRequest -Uri "$RepositoryUrl/utils/createStackInPortainer.ps1" -OutFile createStackInPortainer.ps1 -Headers $requestHeaders
 
 #Hash portainer password
 docker pull httpd:2.4-alpine
