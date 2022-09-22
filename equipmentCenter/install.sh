@@ -28,22 +28,20 @@ read -p 'Agent Parameters: ' parameters </dev/tty
 read -p 'Volumes base folder [opt/fec]: ' BASE_FOLDER </dev/tty
 BASE_FOLDER=${BASE_FOLDER:-opt/fec}
 
-if [ -z "$REPOSITORY" ]
-then
-    read -p 'Scripts repository [https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main]: ' REPOSITORY </dev/tty
-    REPOSITORY=${REPOSITORY:-"https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main"}
-fi
+# Script Repository
+read -p 'Scripts repository [https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main]: ' REPOSITORY </dev/tty
+export REPOSITORY=${REPOSITORY:-"https://raw.githubusercontent.com/criticalmanufacturing/install-scripts/main"}
+read -p 'Scripts repository user: ' REPOSITORY_USER </dev/tty
+export REPOSITORY_USER=${REPOSITORY_USER:-""}
+read -sp 'Scripts repository password: ' REPOSITORY_PASSWORD </dev/tty
+export REPOSITORY_PASSWORD=${REPOSITORY_PASSWORD:-""}
+echo
 
-if [ -z "$REPOSITORY_USER" ]
-then
-    read -p 'Scripts repository user: ' REPOSITORY_USER </dev/tty
-fi
-
-if [ -z "$REPOSITORY_PASSWORD" ]
-then
-    read -sp 'Scripts repository password: ' REPOSITORY_PASSWORD </dev/tty
-    echo
-fi
+# Portal SDK
+read -p 'Portal SDK Base URL (empty if not to override): ' SDK_BASE_URL </dev/tty
+export SDK_BASE_URL=${SDK_BASE_URL:-""}
+read -p 'Portal SDK TAG (empty if not to override/latest): ' SDK_TAG </dev/tty
+export SDK_TAG=${SDK_TAG:-""}
 
 ## ======== CREATE INFRASTRUCTURE AND AGENT ========
 echo
