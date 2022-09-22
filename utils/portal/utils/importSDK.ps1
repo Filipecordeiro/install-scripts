@@ -23,6 +23,6 @@ New-Item -ItemType directory -Path .\sdk -Force | Out-Null
 $requestHeaders = @{ Authorization = "Basic "+ [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${CustomerPortalSDKRepositoryUser}:${CustomerPortalSDKRepositoryPassword}")) }
 Invoke-WebRequest -Uri $CustomerPortalSDKReleaseUrl -OutFile "./sdk/$CustomerPortalSDKPowershellAssetName" -Headers $requestHeaders
 
-Expand-Archive .\sdk\$CustomerPortalSDKPowershellAssetName -DestinationPath "./sdk2/" -Force
+Expand-Archive .\sdk\$CustomerPortalSDKPowershellAssetName -DestinationPath "./sdk/" -Force
 Remove-Item .\sdk\$CustomerPortalSDKPowershellAssetName
 Import-Module .\sdk\Cmf.CustomerPortal.Sdk.Powershell.dll
